@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import sigungu from "@/data/sigungu.json";
 import {
   RISK_COLOR,
@@ -74,6 +74,18 @@ export default function MapExplorer({ zones, cases }: { zones: Zone[]; cases: Ca
   const [selectedTaasId, setSelectedTaasId] = useState<string | null>(null);
 
   const region = REGIONS[sidoIdx];
+
+  // 모바일: 범례는 접힌 상태로 시작, 지점 선택 시 상세 패널로 스크롤
+  const [legendOpen, setLegendOpen] = useState(true);
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 800px)").matches) setLegendOpen(false);
+  }, []);
+  useEffect(() => {
+    if (!selectedId && !selectedTaasId) return;
+    if (!window.matchMedia("(max-width: 800px)").matches) return;
+    const t = setTimeout(() => document.querySelector(".detail")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+    return () => clearTimeout(t);
+  }, [selectedId, selectedTaasId]);
 
   const filtered = useMemo(
     () =>
@@ -399,24 +411,27 @@ export default function MapExplorer({ zones, cases }: { zones: Zone[]; cases: Ca
           selectedTaasId={selectedTaasId}
           onSelectTaas={selectTaas}
         />
-        <div className="legend">
-          <b>교육용 예시 위험도</b>
-          {[5, 4, 3, 2, 1].map((n) => (
-            <div key={n}>
-              <i style={{ background: RISK_COLOR[n] }} />
-              {n} · {RISK_LABEL[n]}
+        <details className="legend" open={legendOpen} onToggle={(e) => setLegendOpen((e.target as HTMLDetailsElement).open)}>
+          <summary>범례</summary>
+          <div className="legend-body">
+            <b>교육용 예시 위험도</b>
+            {[5, 4, 3, 2, 1].map((n) => (
+              <div key={n}>
+                <i style={{ background: RISK_COLOR[n] }} />
+                {n} · {RISK_LABEL[n]}
+              </div>
+            ))}
+            <b>TAAS 실데이터</b>
+            <div>
+              <i style={{ background: TAAS_COLOR.freezing }} />
+              결빙 사고다발
             </div>
-          ))}
-          <b style={{ marginTop: 6 }}>TAAS 실데이터</b>
-          <div>
-            <i style={{ background: TAAS_COLOR.freezing }} />
-            결빙 사고다발
+            <div>
+              <i style={{ background: TAAS_COLOR.all }} />
+              지자체별 사고다발
+            </div>
           </div>
-          <div>
-            <i style={{ background: TAAS_COLOR.all }} />
-            지자체별 사고다발
-          </div>
-        </div>
+        </details>
       </div>
     </div>
   );
