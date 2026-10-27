@@ -6,8 +6,31 @@ import { CircleMarker, GeoJSON, MapContainer, TileLayer, Tooltip, useMap } from 
 import type { GeoJsonObject } from "geojson";
 import "leaflet/dist/leaflet.css";
 import { RISK_COLOR, ROAD_LABEL, type TaasZone, type Zone } from "@/lib/types";
+import { MATCH_LABEL, photoFor, photoUrl } from "@/lib/photos";
 
 export const TAAS_COLOR = { all: "#8e24aa", freezing: "#1e88e5" } as const;
+
+/** 한반도(제주·울릉·독도 포함) 범위 */
+const KOREA_BOUNDS = L.latLngBounds([32.8, 124.0], [43.2, 132.0]);
+
+/** 지도 이동·축소를 한반도 범위로 제한. 최소 줌은 화면 크기에 맞춰 한반도가 꽉 차는 수준 */
+function KoreaLimits() {
+  const map = useMap();
+  useEffect(() => {
+    const apply = () => {
+      const fit = map.getBoundsZoom(KOREA_BOUNDS, false);
+      map.setMinZoom(Math.max(5, Math.floor(fit)));
+      if (map.getZoom() < map.getMinZoom()) map.setZoom(map.getMinZoom());
+    };
+    map.setMaxBounds(KOREA_BOUNDS.pad(0.05));
+    apply();
+    map.on("resize", apply);
+    return () => {
+      map.off("resize", apply);
+    };
+  }, [map]);
+  return null;
+}
 
 function FlyTo({ zone, taas }: { zone: Zone | undefined; taas: TaasZone | undefined }) {
   const map = useMap();
@@ -49,16 +72,28 @@ export default function LeafletMap({
   const selected = zones.find((z) => z.id === selectedId);
   const selectedTaas = taasZones.find((z) => z.id === selectedTaasId);
   return (
-    <MapContainer center={[36.4, 127.9]} zoom={7} scrollWheelZoom style={{ width: "100%", height: "100%" }}>
+    <MapContainer
+      center={[36.3, 127.8]}
+      zoom={7}
+      minZoom={6}
+      maxZoom={18}
+      maxBounds={KOREA_BOUNDS.pad(0.05)}
+      maxBoundsViscosity={1}
+      scrollWheelZoom
+      style={{ width: "100%", height: "100%" }}
+    >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        bounds={KOREA_BOUNDS.pad(0.1)}
       />
+      <KoreaLimits />
       <FlyTo zone={selected} taas={selectedTaas} />
       <FitTaas zones={taasZones} />
 
       {zones.map((z) => {
         const isSel = z.id === selectedId;
+        const photo = photoFor(z.id);
         return (
           <CircleMarker
             key={z.id}
@@ -72,10 +107,28 @@ export default function LeafletMap({
             }}
             eventHandlers={{ click: () => onSelect(z.id) }}
           >
-            <Tooltip direction="top" offset={[0, -6]}>
-              <b>{z.name}</b>
-              <br />
-              {ROAD_LABEL[z.road_type]} · 위험도 {z.risk} (교육용 예시)
+            <Tooltip direction="top" offset={[0, -8]} className="zone-tip" opacity={1}>
+              <div className="tip-card">
+                {photo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={photoUrl(photo, 320)} alt={photo.caption} loading="lazy" />
+                ) : (
+                  <div className="tip-nophoto">도로 사진 준비 중</div>
+                )}
+                <div className="tip-body">
+                  <b>{z.name}</b>
+                  <span>
+                    {ROAD_LABEL[z.road_type]} · 위험도 {z.risk} (교육용 예시)
+                  </span>
+                  {photo && (
+                    <small>
+                      {MATCH_LABEL[photo.match]} · {photo.caption}
+                      <br />
+                      사진: {photo.artist} / {photo.license} / 위키미디어 공용
+                    </small>
+                  )}
+                </div>
+              </div>
             </Tooltip>
           </CircleMarker>
         );
