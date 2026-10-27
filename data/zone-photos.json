@@ -1,0 +1,18 @@
+{
+  "z01": { "file": "Near Degwallyong IC Old Yeongdong Expressway.jpg", "caption": "옛 영동고속도로 대관령IC 부근", "match": "exact", "artist": "Sujseoh1377", "license": "Public domain" },
+  "z02": { "file": "ROK National Route 44, 56 Yangyang IC 300m Ahead(Eastward Dir).jpg", "caption": "국도 44호선(한계령 경유 노선) 양양IC 부근", "match": "nearby", "artist": "Jhcbs1019", "license": "CC BY-SA 4.0" },
+  "z03": { "file": "20190913 Misiryeong Tunnel 구간과속단속시점 (1).jpg", "caption": "미시령터널 구간단속 시작 지점", "match": "exact", "artist": "Misiryeong", "license": "CC BY-SA 4.0" },
+  "z04": { "file": "Seohaean Expwy Seohae BR(Mokpo Dir) 4.jpg", "caption": "서해안고속도로 서해대교(목포 방향)", "match": "exact", "artist": "Jhcbs1019", "license": "CC BY-SA 4.0" },
+  "z05": { "file": "Incheon bridge (12).jpg", "caption": "인천대교", "match": "exact", "artist": "Jinho Jung", "license": "Public domain" },
+  "z06": { "file": "광안대교위에서 - panoramio.jpg", "caption": "광안대교 위 도로", "match": "exact", "artist": "유리오빠", "license": "CC BY 3.0" },
+  "z08": { "file": "Jungbu Naeryuk Expressway Goesan IC.jpg", "caption": "중부내륙고속도로 괴산IC 부근", "match": "nearby", "artist": "G43", "license": "CC BY 3.0" },
+  "z09": { "file": "Highway55-JungnyeongTunnel2.jpg", "caption": "중앙고속도로 죽령터널", "match": "exact", "artist": "Syonsi", "license": "Public domain" },
+  "z10": { "file": "Seoul-Yangyang Expwy Injeyangyang TN(Yangyang Dir).jpg", "caption": "서울양양고속도로 인제양양터널(양양 방향)", "match": "exact", "artist": "Jhcbs1019", "license": "CC BY-SA 4.0" },
+  "z11": { "file": "Jamsu Bridge Rainbow Fountain.jpg", "caption": "잠수교(반포대교 하층)", "match": "exact", "artist": "Photo and Share CC", "license": "Public domain" },
+  "z12": { "file": "Sinweol Yeoi Underpass Enterance.jpg", "caption": "서울 신월여의지하도로 입구 (유사 지하차도 참고)", "match": "similar", "artist": "Wikiwater2020", "license": "CC BY-SA 3.0" },
+  "z13": { "file": "Hallasan's Road.jpg", "caption": "한라산 일대 산간도로", "match": "nearby", "artist": "一般通过中国用户", "license": "CC BY-SA 4.0" },
+  "z15": { "file": "Korea National Route 5 at Hwacheon, Gangwon-do 1.jpg", "caption": "국도 5호선 화천 구간", "match": "exact", "artist": "Jjw", "license": "CC BY-SA 3.0" },
+  "z16": { "file": "Seoul-Yangyang Expwy Inje IC Exit, Naerincheon SA Entrance(Yangyang Dir) 2.jpg", "caption": "서울양양고속도로 인제IC 부근", "match": "exact", "artist": "Jhcbs1019", "license": "CC BY-SA 4.0" },
+  "z17": { "file": "Korea National Road 3.jpg", "caption": "국도 3호선 연천 일대", "match": "exact", "artist": "G43", "license": "CC BY-SA 3.0" },
+  "z18": { "file": "ROK National Route 46 Suin TN(Westward Dir).jpg", "caption": "국도 46호선 수인터널(양구)", "match": "exact", "artist": "Jhcbs1019", "license": "CC BY-SA 4.0" }
+}
