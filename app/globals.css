@@ -223,3 +223,42 @@ button.zone-item.sel { background: #e8f6ef; }
   .anchors a { min-height: 40px; display: inline-flex; align-items: center; }
   .topbar nav a { min-height: 44px; display: flex; align-items: center; justify-content: center; }
 }
+
+/* ---------- 현장 제보 ---------- */
+.side-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.report-open { background: #fff; color: var(--green-dark); border: none; border-radius: 16px; padding: 5px 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.report-open:hover { background: #f1fbf6; }
+.report-box { padding: 14px 16px; background: #fffaf2; border-bottom: 2px solid var(--orange); display: flex; flex-direction: column; gap: 10px; }
+.report-box h3 { margin: 0; font-size: 17px; }
+.report-head { display: flex; justify-content: space-between; align-items: center; }
+.report-head .close { border: none; background: none; font-size: 22px; cursor: pointer; color: var(--muted); }
+.report-help { margin: 0; font-size: 12px; color: var(--muted); }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.flabel { font-size: 13px; font-weight: 600; }
+.field input, .field textarea, .field select { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: 14px; font-family: inherit; background: #fff; }
+.field textarea { resize: vertical; }
+.pick-ok { font-size: 13px; color: var(--green-dark); font-weight: 600; }
+.pick-banner { background: var(--orange); color: #fff; font-size: 13px; font-weight: 700; padding: 8px 16px; }
+.report-error { background: #fdecea; color: #b71c1c; border-radius: 6px; padding: 8px 10px; font-size: 13px; }
+.map-pick-hint {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000;
+  background: var(--navy); color: #fff; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0,0,0,.25); white-space: nowrap;
+}
+.map-pick-hint .reset { color: #ffd59a; margin-left: 6px; }
+.leaflet-container.picking { cursor: crosshair; }
+
+/* ---------- 관리자 ---------- */
+.admin-top { display: flex; justify-content: space-between; align-items: center; }
+.admin-map { height: 320px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); margin-bottom: 8px; }
+.admin-card { cursor: pointer; }
+.admin-card.focus { border-color: var(--orange); box-shadow: 0 0 0 2px #fde3bd; }
+.admin-desc { font-size: 14px; margin: 6px 0; }
+.admin-sub { font-size: 12px; color: var(--muted); }
+.admin .search input[type=password] { flex: 1 1 220px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 16px; min-width: 0; }
+
+@media (max-width: 800px) {
+  .field input, .field textarea, .field select { font-size: 16px; }
+  .report-open { padding: 8px 12px; }
+  .map-pick-hint { font-size: 14px; }
+}

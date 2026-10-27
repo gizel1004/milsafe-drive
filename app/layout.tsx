@@ -50,7 +50,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <footer className="footer">
           사고 사례는 방송 보도 기사·프로그램 소개글의 요약이며 영상·이미지 원본은 포함하지 않습니다. 지도의 위험구역 좌표는
-          교육용 근사 위치로, 실제 사고다발지점 통계가 아닙니다. 부대 규정이 있으면 해당 규정을 우선합니다.
+          교육용 근사 위치로, 실제 사고다발지점 통계가 아닙니다. 점선 테두리 지점은 현장 제보를 관리자가 승인한 곳입니다. 부대 규정이 있으면 해당 규정을 우선합니다.{" "}
+          <Link href="/admin" style={{ color: "inherit" }}>관리자</Link>
         </footer>
       </body>
     </html>
