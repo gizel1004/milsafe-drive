@@ -20,7 +20,7 @@ export default async function Learn() {
       <div className="anchors">
         {tips.map((t) => (
           <a key={t.id} href={`#${t.key}`}>
-            {t.title.replace(" 안전운행", "")}
+            {t.title.replace(/(과)? ?안전운행$/, "").trim()}
           </a>
         ))}
       </div>
