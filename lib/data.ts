@@ -18,5 +18,6 @@ async function load<T>(table: string, local: T[], orderBy = "id"): Promise<T[]> 
 }
 
 export const getCases = () => load<CaseItem>("cases", casesLocal as unknown as CaseItem[]);
-export const getZones = () => load<Zone>("zones", zonesLocal as unknown as Zone[]);
+export const getZones = async () =>
+  (await load<Zone>("zones", zonesLocal as unknown as Zone[])).filter((z) => !z.hidden);
 export const getTips = () => load<Tip>("tips", tipsLocal as unknown as Tip[]);

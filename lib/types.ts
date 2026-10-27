@@ -39,6 +39,29 @@ export interface Zone {
   prevention: string[];
   military_note: string;
   case_ids: string[];
+  /** example = 교육용 예시 지점, report = 현장 제보 후 관리자 승인 지점 */
+  origin?: "example" | "report";
+  reported_at?: string | null;
+  hidden?: boolean;
+}
+
+/** 현장 제보 (관리자 승인 대기) */
+export interface ZoneReport {
+  id: string;
+  created_at: string;
+  name: string;
+  region: string;
+  lat: number;
+  lng: number;
+  road_type: RoadType;
+  climates: Weather[];
+  risk: number;
+  description: string;
+  hazards: string[];
+  prevention: string[];
+  military_note: string | null;
+  reporter: string | null;
+  status: "pending" | "approved" | "rejected";
 }
 
 export interface Tip {
