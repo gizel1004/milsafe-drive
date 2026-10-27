@@ -10,12 +10,17 @@
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
-  font-family: -apple-system, "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   color: var(--text);
   background: var(--bg);
   line-height: 1.55;
+  /* 한글이 단어 중간에서 끊기지 않도록 */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
+button, select, input { font-family: inherit; }
 a { color: inherit; }
 
 .topbar {
@@ -107,12 +112,48 @@ select { padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; fo
 .article .src { font-size: 12px; color: var(--muted); margin-top: 20px; }
 .back { font-size: 13px; display: inline-block; margin-bottom: 12px; color: var(--green-dark); }
 
+.topbar nav a { white-space: nowrap; }
+.legend summary { cursor: pointer; font-weight: 700; list-style: none; }
+.legend summary::-webkit-details-marker { display: none; }
+.legend summary::after { content: " ▾"; color: var(--muted); }
+.legend[open] summary::after { content: " ▴"; }
+.legend .legend-body b { margin-top: 6px; }
+
+/* ---------- 모바일 ---------- */
 @media (max-width: 800px) {
-  .explorer { grid-template-columns: 1fr; grid-template-rows: 55vh auto; height: auto; }
-  .map-wrap { order: -1; min-height: 55vh; }
-  .side { border-right: none; max-height: none; }
-  .topbar nav { gap: 10px; }
-  .topbar .brand { font-size: 14px; }
+  .topbar { flex-direction: column; align-items: stretch; height: auto; padding: 0; }
+  .topbar .brand { font-size: 16px; padding: 10px 16px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid rgba(255,255,255,.12); }
+  .topbar nav a { text-align: center; font-size: 14px; padding: 10px 4px; opacity: .9; }
+
+  .explorer { display: flex; flex-direction: column; height: auto; min-height: 0; }
+  .map-wrap { order: -1; height: 52vh; min-height: 320px; }
+  .side { border-right: none; max-height: none; overflow: visible; }
+
+  .legend { left: 8px; bottom: 22px; padding: 6px 10px; font-size: 12px; max-width: calc(100% - 16px); }
+  .legend .legend-body div { margin: 1px 0; }
+
+  /* iOS 에서 입력칸 포커스 시 확대되지 않도록 16px */
+  select, input, .btn { font-size: 16px; }
+  select { padding: 7px 8px; max-width: 100%; }
+  .taas-box .row { flex-wrap: wrap; }
+  .taas-box .row select { flex: 1 1 140px; }
+  .btn { padding: 9px 16px; }
+  .chip { font-size: 14px; padding: 7px 12px; }
+  .zone-item { padding: 12px 16px; }
+  .zone-item .nm { font-size: 15px; }
+  .zone-item .sub { font-size: 13px; }
+  .detail h2 { font-size: 19px; }
+  .detail ul, .detail p, .detail .mil, .case-link { font-size: 14px !important; }
+
+  .page { padding: 18px 16px 32px; }
+  .page h1 { font-size: 22px; }
+  .cards { grid-template-columns: 1fr; }
+  .card ol, .card p { font-size: 14px; }
+  .filters a { font-size: 14px; padding: 6px 11px; }
+  .article { padding: 16px; }
+  .article p { font-size: 15px; }
+  .footer { font-size: 12px; line-height: 1.6; }
 }
 
 /* ---------- TAAS 패널 ---------- */

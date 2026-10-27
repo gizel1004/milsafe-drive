@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 
@@ -7,16 +7,31 @@ export const metadata: Metadata = {
   description: "한블리 등 방송 사례를 바탕으로 한 군 차량 사고예방 상황별 안전운행 교육 프로그램",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#1e2a3a",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <header className="topbar">
           <Link href="/" className="brand">
             <span className="brand-mark">▲</span> 군 차량 안전운행 교육
           </Link>
           <nav>
-            <Link href="/">위험구역 지도</Link>
+            <Link href="/">위험지도</Link>
             <Link href="/learn">상황별 교육</Link>
             <Link href="/cases">사고 사례</Link>
           </nav>
