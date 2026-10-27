@@ -38,9 +38,10 @@ export default async function CaseDetail({ params }: { params: { id: string } })
           <>
             <h2>관련 위험구역 (지도)</h2>
             {relatedZones.map((z) => (
-              <div key={z.id} style={{ fontSize: 14 }}>▸ {z.name} ({z.region})</div>
+              <div key={z.id} style={{ fontSize: 14, padding: "4px 0" }}>
+                ▸ <Link className="back" href={`/?z=${z.id}`}>{z.name}</Link> ({z.region}) — 지도에서 보기
+              </div>
             ))}
-            <p style={{ marginTop: 8 }}><Link className="back" href="/">지도에서 보기 →</Link></p>
           </>
         )}
 
