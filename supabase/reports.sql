@@ -1,0 +1,5 @@
+-- 현장 제보 + 관리자 승인 구조 (운영 DB 에 적용됨: 마이그레이션 zone_reports_and_admin, fix_approve_risk_default)
+-- 새 프로젝트에 다시 만들 때 참고용입니다. 관리자 코드는 아래 마지막 줄로 직접 정합니다.
+--   insert into private.admin_secret (id, hash) values (1, extensions.crypt('<관리자 코드>', extensions.gen_salt('bf', 10)))
+--   on conflict (id) do update set hash = excluded.hash;
+-- 자세한 정의는 Supabase 대시보드 > Database > Migrations 에서 확인할 수 있습니다.
