@@ -20,7 +20,7 @@ export async function GET(req: Request) {
     return NextResponse.json<TaasResponse>({
       configured: false,
       zones: [],
-      message: "TAAS_SERVICE_KEY 환경변수가 설정되지 않았습니다. README의 'TAAS 연동' 절차를 참고하세요.",
+      message: "실제 사고다발지역 조회 서비스는 준비 중입니다.",
     });
   }
 
