@@ -2,9 +2,20 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 
+const DESC = "기후·도로별 위험구역 지도와 방송 사고사례로 배우는 군 차량 사고예방 안전운행 교육";
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://milsafe-drive.vercel.app"),
   title: "군 차량 안전운행 교육 | 상황별 위험구역 지도",
-  description: "한블리 등 방송 사례를 바탕으로 한 군 차량 사고예방 상황별 안전운행 교육 프로그램",
+  description: DESC,
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    siteName: "군 차량 안전운행 교육",
+    title: "군 차량 안전운행 교육 | 상황별 위험구역 지도",
+    description: DESC,
+  },
+  twitter: { card: "summary_large_image", title: "군 차량 안전운행 교육", description: DESC },
 };
 
 export const viewport: Viewport = {
