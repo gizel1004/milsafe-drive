@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import sigungu from "@/data/sigungu.json";
 import { MATCH_LABEL, photoFor, photoPage, photoUrl } from "@/lib/photos";
+import ReportForm from "./ReportForm";
 import {
   RISK_COLOR,
   RISK_LABEL,
@@ -85,6 +86,12 @@ export default function MapExplorer({
   const [taasMsg, setTaasMsg] = useState<string | null>(null);
   const [selectedTaasId, setSelectedTaasId] = useState<string | null>(null);
 
+  // 현장 제보
+  const [reportOpen, setReportOpen] = useState(false);
+  const [pickMode, setPickMode] = useState(false);
+  const [pick, setPick] = useState<{ lat: number; lng: number } | null>(null);
+  const reportRef = useRef<HTMLDivElement>(null);
+
   const [legendOpen, setLegendOpen] = useState(true);
   const [mapHidden, setMapHidden] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
@@ -145,7 +152,7 @@ export default function MapExplorer({
       ),
     [zones, weathers, roads, minRisk],
   );
-  const visibleExamples = showExamples ? filtered : [];
+  const visibleExamples = showExamples ? filtered : filtered.filter((z) => z.origin === "report");
 
   const selected = zones.find((z) => z.id === selectedId) ?? null;
   const selectedTaas = taasZones.find((z) => z.id === selectedTaasId) ?? null;
@@ -166,6 +173,28 @@ export default function MapExplorer({
     setMinRisk(1);
   };
   const scrollToMap = () => mapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  const openReport = () => {
+    setSelectedId(null);
+    setSelectedTaasId(null);
+    setReportOpen(true);
+    setPickMode(true);
+    if (isMobile()) scrollToMap();
+  };
+  const closeReport = () => {
+    setReportOpen(false);
+    setPickMode(false);
+    setPick(null);
+  };
+  const onPick = (p: { lat: number; lng: number }) => {
+    setPick(p);
+    setPickMode(false);
+    if (isMobile()) setTimeout(() => reportRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
+  };
+  const requestPick = () => {
+    setPickMode(true);
+    if (isMobile()) scrollToMap();
+  };
 
   async function loadRegion() {
     if (!gugun) {
@@ -209,7 +238,21 @@ export default function MapExplorer({
   return (
     <div className="explorer">
       <aside className="side">
-        <div className="side-head">위험구역 분석</div>
+        <div className="side-head">
+          위험구역 분석
+          {!reportOpen && (
+            <button type="button" className="report-open" onClick={openReport}>
+              ＋ 위험지역 제보
+            </button>
+          )}
+        </div>
+
+        {reportOpen && (
+          <div ref={reportRef}>
+            {pickMode && <div className="pick-banner">지도에서 위험지역 위치를 누르세요</div>}
+            <ReportForm pick={pick} onPickRequest={requestPick} onClose={closeReport} />
+          </div>
+        )}
 
         {selected && (
           <div className="detail">
@@ -217,7 +260,12 @@ export default function MapExplorer({
               ×
             </button>
             <h2>{selected.name}</h2>
-            <div className="meta">{selected.region} · 교육용 예시 지점</div>
+            <div className="meta">
+              {selected.region} ·{" "}
+              {selected.origin === "report"
+                ? `현장 제보 지점(관리자 승인${selected.reported_at ? `, ${selected.reported_at.slice(0, 10)} 제보` : ""})`
+                : "교육용 예시 지점"}
+            </div>
             {photo ? (
               <figure className="detail-photo">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -466,7 +514,7 @@ export default function MapExplorer({
         </div>
 
         <div className="result-head">
-          <span>교육용 예시 지점</span>
+          <span>위험지역 목록</span>
           <span>총 {visibleExamples.length}건</span>
         </div>
         {visibleExamples.length === 0 && <div style={{ padding: 16, fontSize: 13, color: "#6b7785" }}>표시할 지점이 없습니다.</div>}
@@ -491,7 +539,18 @@ export default function MapExplorer({
           taasZones={taasZones}
           selectedTaasId={selectedTaasId}
           onSelectTaas={selectTaas}
+          pickMode={pickMode}
+          pick={reportOpen ? pick : null}
+          onPick={onPick}
         />
+        {pickMode && (
+          <div className="map-pick-hint">
+            위험지역 위치를 지도에서 누르세요{" "}
+            <button type="button" className="reset" onClick={() => setPickMode(false)}>
+              취소
+            </button>
+          </div>
+        )}
         <details className="legend" open={legendOpen} onToggle={(e) => setLegendOpen((e.target as HTMLDetailsElement).open)}>
           <summary>범례</summary>
           <div className="legend-body">
@@ -510,6 +569,10 @@ export default function MapExplorer({
             <div>
               <i style={{ background: TAAS_COLOR.all }} />
               지자체별 사고다발
+            </div>
+            <div>
+              <i style={{ background: "#fff", border: "2px dashed #1e2a3a", boxShadow: "none" }} />
+              점선 테두리 = 현장 제보(승인)
             </div>
             <div className="legend-hint">마커에 마우스를 올리면 도로 사진이 보입니다</div>
           </div>

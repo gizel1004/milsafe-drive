@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import L from "leaflet";
-import { CircleMarker, GeoJSON, MapContainer, TileLayer, Tooltip, useMap } from "react-leaflet";
+import { CircleMarker, GeoJSON, MapContainer, TileLayer, Tooltip, useMap, useMapEvents } from "react-leaflet";
 import type { GeoJsonObject } from "geojson";
 import "leaflet/dist/leaflet.css";
 import { RISK_COLOR, ROAD_LABEL, type TaasZone, type Zone } from "@/lib/types";
@@ -29,6 +29,22 @@ function KoreaLimits() {
       map.off("resize", apply);
     };
   }, [map]);
+  return null;
+}
+
+/** 제보 모드: 지도를 누른 위치를 넘겨준다 (한반도 범위 안만) */
+function PickOnClick({ active, onPick }: { active: boolean; onPick: (p: { lat: number; lng: number }) => void }) {
+  const map = useMapEvents({
+    click(e) {
+      if (!active) return;
+      if (!KOREA_BOUNDS.contains(e.latlng)) return;
+      onPick({ lat: Number(e.latlng.lat.toFixed(5)), lng: Number(e.latlng.lng.toFixed(5)) });
+    },
+  });
+  useEffect(() => {
+    const el = map.getContainer();
+    el.classList.toggle("picking", active);
+  }, [active, map]);
   return null;
 }
 
@@ -61,6 +77,9 @@ export default function LeafletMap({
   taasZones,
   selectedTaasId,
   onSelectTaas,
+  pickMode = false,
+  pick = null,
+  onPick = () => {},
 }: {
   zones: Zone[];
   selectedId: string | null;
@@ -68,6 +87,9 @@ export default function LeafletMap({
   taasZones: TaasZone[];
   selectedTaasId: string | null;
   onSelectTaas: (id: string) => void;
+  pickMode?: boolean;
+  pick?: { lat: number; lng: number } | null;
+  onPick?: (p: { lat: number; lng: number }) => void;
 }) {
   const selected = zones.find((z) => z.id === selectedId);
   const selectedTaas = taasZones.find((z) => z.id === selectedTaasId);
@@ -88,24 +110,39 @@ export default function LeafletMap({
         bounds={KOREA_BOUNDS.pad(0.1)}
       />
       <KoreaLimits />
+      <PickOnClick active={pickMode} onPick={onPick} />
       <FlyTo zone={selected} taas={selectedTaas} />
       <FitTaas zones={taasZones} />
+
+      {pick && (
+        <CircleMarker
+          center={[pick.lat, pick.lng]}
+          radius={12}
+          pathOptions={{ color: "#111", weight: 3, dashArray: "4 3", fillColor: "#f59a1b", fillOpacity: 0.85 }}
+        >
+          <Tooltip direction="top" offset={[0, -8]} permanent>
+            제보 위치
+          </Tooltip>
+        </CircleMarker>
+      )}
 
       {zones.map((z) => {
         const isSel = z.id === selectedId;
         const photo = photoFor(z.id);
+        const reported = z.origin === "report";
         return (
           <CircleMarker
             key={z.id}
             center={[z.lat, z.lng]}
             radius={isSel ? 16 : 10 + z.risk}
             pathOptions={{
-              color: isSel ? "#111" : "#fff",
-              weight: isSel ? 3 : 2,
+              color: isSel ? "#111" : reported ? "#1e2a3a" : "#fff",
+              weight: isSel ? 3 : reported ? 2.5 : 2,
+              dashArray: reported ? "4 3" : undefined,
               fillColor: RISK_COLOR[z.risk],
               fillOpacity: 0.9,
             }}
-            eventHandlers={{ click: () => onSelect(z.id) }}
+            eventHandlers={{ click: () => (pickMode ? undefined : onSelect(z.id)) }}
           >
             <Tooltip direction="top" offset={[0, -8]} className="zone-tip" opacity={1}>
               <div className="tip-card">
@@ -118,7 +155,7 @@ export default function LeafletMap({
                 <div className="tip-body">
                   <b>{z.name}</b>
                   <span>
-                    {ROAD_LABEL[z.road_type]} · 위험도 {z.risk} (교육용 예시)
+                    {ROAD_LABEL[z.road_type]} · 위험도 {z.risk} ({reported ? "현장 제보·승인" : "교육용 예시"})
                   </span>
                   {photo && (
                     <small>
